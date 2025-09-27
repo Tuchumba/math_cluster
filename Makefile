@@ -1,8 +1,26 @@
-CC ?= gcc
-CSTD ?= -std=c11
-WARN := -Wall -Wextra -Wpedantic -Wshadow -Wpointer-arith -Wcast-qual -Wcast-align -Wstrict-prototypes -Wmissing-prototypes -Wno-unused-parameter
-OPT  ?= -O2
-HARDEN := -fstack-protector-strong -D_FORTIFY_SOURCE=3 -fPIE -pie
+CC ?= $(shell command -v clang >/dev/null 2>&1 && echo clang || echo gcc)
+
+CSTD   ?= -std=c11
+OPT    ?= -O2
+WARN   := -Wall -Wextra -Wpedantic -Wshadow -Wpointer-arith -Wcast-qual -Wcast-align -Wstrict-prototypes -Wmissing-prototypes -Wno-unused-parameter
+HARDEN := -fstack-protector-strong -D_FORTIFY_SOURCE=3 -fPIE
+CFLAGS := $(CSTD) $(OPT) $(WARN) $(HARDEN)
+
+ifeq ($(CC),clang)
+  CFLAGS += -fcolor-diagnostics
+else
+  CFLAGS += -fdiagnostics-color=always
+endif
+
+ifeq ($(SAN),address)
+  CFLAGS  += -fsanitize=address -fno-omit-frame-pointer
+  LDFLAGS += -fsanitize=address
+endif
+ifeq ($(SAN),undefined)
+  CFLAGS  += -fsanitize=undefined -fno-omit-frame-pointer
+  LDFLAGS += -fsanitize=undefined
+endif
+
 LDFLAGS += -Wl,-z,relro,-z,now -lpthread -lm
 
 BIN := bin

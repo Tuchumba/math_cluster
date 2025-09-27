@@ -1,7 +1,6 @@
 #define _POSIX_C_SOURCE 200809L
 #include "distr.h"
 #include <pthread.h>
-#include <math.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdatomic.h>
@@ -16,7 +15,7 @@ typedef struct {
     double partial;
 } worker_ctx_t;
 
-// Целевая функция (можно заменить при желании)
+// Целевая функция (можно заменить)
 static inline double f(double x) {
     return 4.0 / (1.0 + x*x); // интеграл [0,1] -> π
 }

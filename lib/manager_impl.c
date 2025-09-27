@@ -2,7 +2,6 @@
 #include "distr.h"
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 #include <unistd.h>
 #include <signal.h>
 
@@ -34,7 +33,6 @@ int run_manager(int required_workers, int max_time_sec,
     int connected = 0;
     uint64_t t0 = now_ms();
 
-    // Accept workers
     while (connected < required_workers) {
         if (stop_flag) { fprintf(stderr, "Interrupted\n"); goto fail; }
         if ((now_ms() - t0) / 1000 > (uint64_t)max_time_sec) { fprintf(stderr, "Timeout waiting workers\n"); goto fail; }
@@ -54,10 +52,8 @@ int run_manager(int required_workers, int max_time_sec,
 
     uint64_t t1 = now_ms();
 
-    // Distribute tasks: split [a,b] by weights=cores
     int total_cores = 0;
     for (int i=0;i<required_workers;i++) total_cores += ws[i].cores;
-    double span = b - a;
     double start = a;
     for (int i=0;i<required_workers;i++) {
         long m = n / total_cores;
@@ -70,7 +66,6 @@ int run_manager(int required_workers, int max_time_sec,
         start = end;
     }
 
-    // Collect
     double total = 0.0;
     for (int i=0;i<required_workers;i++) {
         char buf[256];
@@ -90,7 +85,6 @@ int run_manager(int required_workers, int max_time_sec,
     printf("INTEGRAL=%.12f\n", total);
     printf("TOTAL_TIME_SEC=%.6f\n", secs);
     printf("TOTAL_CORES=%d\n", total_cores);
-    // Graceful shutdown
     broadcast_shutdown(ws, required_workers);
     for (int i=0;i<required_workers;i++) close(ws[i].sock);
     close(listen_fd);

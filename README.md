@@ -31,6 +31,14 @@ make test
 
 Логи тестов сохраняются в `tests/out`.
 
+## Проверка на масштабируемость
+
+```bash
+make bench
+```
+
+Запускает пример на разных конфигурациях и выводит результат в виде таблицы.
+
 ## Сборка разными компиляторами и флаги безопасности (7.5)
 
 Поддерживаются gcc/clang. Можно выбрать компилятор:
@@ -40,13 +48,6 @@ make clean && make CC=clang
 make clean && make CC=gcc
 ```
 
-Включены флаги hardening: `-fstack-protector-strong -D_FORTIFY_SOURCE=3 -fPIE -pie`,
-а также линковочные `-Wl,-z,relro,-z,now`. Для отладки доступны санитайзеры:
-
-```bash
-make clean && make SAN=address   # или SAN=ub, SAN=undefined
-```
-
 ## Что реализовано
 
 - Простая текстовая протокол-линия поверх TCP (newline-delimited).
@@ -54,11 +55,10 @@ make clean && make SAN=address   # или SAN=ub, SAN=undefined
   результаты либо таймаут/отказ, в случае критики — завершает все узлы с ошибкой.
 - «Рабочий» ограничивает число потоков (ядра) и общее время выполнения.
 - Численный интеграл методом трапеций с делением на чанки.
-- Примеры `manager` и `worker` показывают работу на одной машине.
 
 ## Структура
 
 - `include/distr.h` — API библиотеки.
 - `src/*.c` — реализация.
-- `examples/manager_main.c`, `examples/worker_main.c` — бинарники.
+- `manager.c`, `worker.c` — пример использования.
 - `scripts/test.sh` — автоматические сценарии (make test).

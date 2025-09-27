@@ -3,10 +3,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-int run_manager(int required_workers, int max_time_sec,
-                const char *host, const char *port,
-                double a, double b, long n);
-
 static void usage(const char *p) {
     fprintf(stderr, "Usage: %s <workers> <host> <port> --a <A> --b <B> --n <N> [--timeout <sec>]\n", p);
 }

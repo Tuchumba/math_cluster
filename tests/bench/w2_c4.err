@@ -1,3 +1,0 @@
-[manager] listening on 127.0.0.1:5605, need 2 workers
-[manager] worker 1 joined (cores=4, timeout=60)
-[manager] worker 2 joined (cores=4, timeout=60)

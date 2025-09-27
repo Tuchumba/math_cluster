@@ -9,48 +9,45 @@
 extern "C" {
 #endif
 
-// === Общие параметры/структуры ===
 typedef struct {
     int sockfd;
 } net_conn_t;
 
-// Конфиг рабочего узла
 typedef struct {
-    int max_cores;        // ограничение по потокам
-    int max_time_sec;     // максимальное допустимое время вычислений
+    int max_cores;        
+    int max_time_sec;     
 } worker_cfg_t;
 
-// Конфиг управляющего узла
 typedef struct {
-    int required_workers; // сколько рабочих нужно
-    int max_time_sec;     // общий максимум на вычисление
+    int required_workers; 
+    int max_time_sec;     
 } manager_cfg_t;
 
-// Задача интегрирования
 typedef struct {
     double a;
     double b;
     long n;
-    int    chunks;        // сколько чанков внутри подзадачи
-    int    id;            // идентификатор подзадачи
+    int    chunks;        
+    int    id;            
 } task_t;
 
-// Результат подзадачи
 typedef struct {
     int id;
     double value;
 } task_result_t;
 
-// === API сети ===
-int net_listen(const char *host, const char *port);            // возвращает listen fd
-int net_accept(int listen_fd, int timeout_sec);                 // accept с таймаутом
-int net_connect(const char *host, const char *port, int timeout_sec); // connect с таймаутом
-int net_send_line(int sockfd, const char *line);                // отправка строки \n-terminated
-int net_recv_line(int sockfd, char *buf, size_t bufsz, int timeout_sec); // чтение строки
+int net_listen(const char *host, const char *port);            
+int net_accept(int listen_fd, int timeout_sec);                 
+int net_connect(const char *host, const char *port, int timeout_sec); 
+int net_send_line(int sockfd, const char *line);                
+int net_recv_line(int sockfd, char *buf, size_t bufsz, int timeout_sec); 
 
-// === Интеграл ===
 double integrate_trapz(double a, double b, long n, int threads, int max_time_sec, int *timed_out);
-// === Хэлперы ===
+
+int run_manager(int required_workers, int max_time_sec, const char *host, const char *port, double a, double b, long n);
+
+int run_worker(const char *host, const char *port, int max_cores, int max_time_sec);
+
 uint64_t now_ms(void);
 int set_socket_timeout(int fd, int sec);
 
@@ -58,4 +55,4 @@ int set_socket_timeout(int fd, int sec);
 }
 #endif
 
-#endif // DISTR_H
+#endif 

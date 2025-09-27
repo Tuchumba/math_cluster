@@ -4,7 +4,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
-#include <errno.h>
 #include <fcntl.h>
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -89,7 +88,7 @@ int net_recv_line(int sockfd, char *buf, size_t bufsz, int timeout_sec) {
     while (i + 1 < bufsz) {
         char c;
         ssize_t r = recv(sockfd, &c, 1, 0);
-        if (r == 0) return -1; // EOF
+        if (r == 0) return -1;
         if (r < 0) return -1;
         if (c == '\n') break;
         buf[i++] = c;

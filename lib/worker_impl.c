@@ -1,7 +1,6 @@
 #define _POSIX_C_SOURCE 200809L
 #include "distr.h"
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
 #include <pthread.h>
@@ -13,7 +12,6 @@ int run_worker(const char *host, const char *port, int max_cores, int max_time_s
     snprintf(hello, sizeof(hello), "HELLO cores=%d timeout=%d", max_cores, max_time_sec);
     if (net_send_line(fd, hello) < 0) { perror("send"); close(fd); return 2; }
 
-    // Wait for one task
     char buf[256];
     if (net_recv_line(fd, buf, sizeof(buf), max_time_sec) < 0) { fprintf(stderr, "no task\n"); close(fd); return 2; }
     if (strncmp(buf, "SHUTDOWN", 8) == 0) { close(fd); return 0; }
@@ -34,7 +32,6 @@ int run_worker(const char *host, const char *port, int max_cores, int max_time_s
     snprintf(line, sizeof(line), "RESULT id=%d value=%.17g", id, val);
     if (net_send_line(fd, line) < 0) { perror("send result"); close(fd); return 2; }
 
-    // Wait for shutdown
     if (net_recv_line(fd, buf, sizeof(buf), 5) == 0 && strncmp(buf,"SHUTDOWN",8)==0) {
         close(fd); return 0;
     }
